@@ -1,6 +1,8 @@
 import React from 'react';
 import { Users, Calculator, Calendar, FileText, BarChart as ChartBar, GraduationCap, Clock, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import ThemeToggle from './ThemeToggle';
+import { useTheme } from '../lib/ThemeContext';
 
 interface ToolCardProps {
   title: string;
@@ -11,48 +13,63 @@ interface ToolCardProps {
   url?: string;
 }
 
-const ToolCard: React.FC<ToolCardProps> = ({ title, description, icon, onClick, isReady }) => (
-  <div 
-    onClick={onClick}
-    className={`
-      relative p-6 rounded-2xl transition-all duration-500 cursor-pointer overflow-hidden
-      ${isReady 
-        ? 'glass border border-white/20 hover:border-white/40 hover:translate-y-[-4px] hover:shadow-xl' 
-        : 'glass-dark border border-gray-700/30'}
-      flex flex-col items-center text-center group
-    `}
-  >
-    <div className="absolute inset-0 grid-pattern opacity-40"></div>
-    <div className={`
-      relative z-10 p-4 rounded-2xl mb-4 transition-transform duration-500 group-hover:scale-110
-      ${isReady 
-        ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white' 
-        : 'bg-gray-800/50 text-gray-400'}
-    `}>
-      {icon}
+const ToolCard: React.FC<ToolCardProps> = ({ title, description, icon, onClick, isReady }) => {
+  const { darkMode } = useTheme();
+  
+  return (
+    <div 
+      onClick={onClick}
+      className={`
+        relative p-6 rounded-2xl transition-all duration-500 cursor-pointer overflow-hidden
+        ${isReady 
+          ? darkMode 
+            ? 'bg-gray-800 border border-gray-700 hover:border-blue-500/50 hover:translate-y-[-4px] hover:shadow-xl' 
+            : 'glass border border-white/20 hover:border-white/40 hover:translate-y-[-4px] hover:shadow-xl' 
+          : 'glass-dark border border-gray-700/30'}
+        flex flex-col items-center text-center group
+      `}
+    >
+      <div className={`absolute inset-0 grid-pattern ${darkMode ? 'opacity-20' : 'opacity-40'}`}></div>
+      <div className={`
+        relative z-10 p-4 rounded-2xl mb-4 transition-transform duration-500 group-hover:scale-110
+        ${isReady 
+          ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white' 
+          : 'bg-gray-800/50 text-gray-400'}
+      `}>
+        {icon}
+      </div>
+      <h3 className={`
+        relative z-10 text-lg font-bold mb-2 
+        ${isReady 
+          ? darkMode 
+            ? 'text-white text-shadow-sm' 
+            : 'text-gray-900' 
+          : 'text-gray-400'}
+      `}>
+        {title}
+      </h3>
+      <p className={`
+        relative z-10 text-sm 
+        ${isReady 
+          ? darkMode 
+            ? 'text-gray-200 text-shadow-sm' 
+            : 'text-gray-700' 
+          : 'text-gray-500'}
+      `}>
+        {description}
+      </p>
+      {!isReady && (
+        <span className="relative z-10 mt-4 text-xs px-3 py-1.5 bg-gray-800 text-gray-400 rounded-full border border-gray-700">
+          Em breve
+        </span>
+      )}
     </div>
-    <h3 className={`
-      relative z-10 text-lg font-bold mb-2 
-      ${isReady ? 'text-gray-800' : 'text-gray-400'}
-    `}>
-      {title}
-    </h3>
-    <p className={`
-      relative z-10 text-sm 
-      ${isReady ? 'text-gray-600' : 'text-gray-500'}
-    `}>
-      {description}
-    </p>
-    {!isReady && (
-      <span className="relative z-10 mt-4 text-xs px-3 py-1.5 bg-gray-800 text-gray-400 rounded-full border border-gray-700">
-        Em breve
-      </span>
-    )}
-  </div>
-);
+  );
+};
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { darkMode } = useTheme();
   
   const tools = [
     {
@@ -118,10 +135,27 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-blue-900 to-gray-900 animate-gradient">
+    <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-indigo-900 via-blue-900 to-gray-900 animate-gradient'}`}>
       <div className="absolute inset-0 grid-pattern opacity-20"></div>
+      
+      <div className="fixed top-4 right-4 z-50 flex items-center space-x-3">
+        <button
+          onClick={handleLogout}
+          className="p-3 rounded-full bg-white/20 hover:bg-white/30 transition-colors flex items-center justify-center shadow-md"
+          aria-label="Sair do sistema"
+          title="Sair"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+        </button>
+        <ThemeToggle />
+      </div>
+      
       <div className="relative container mx-auto px-4 py-12">
-        <header className="mb-16 text-center">
+        <header className="mb-16 text-center relative pt-10">          
           <div className="inline-block p-2 px-4 rounded-full bg-white/10 text-white/70 text-sm mb-4">
             Sistema Integrado de RH
           </div>
@@ -131,12 +165,6 @@ export default function Dashboard() {
           <p className="text-blue-100/80 mb-4">
             Selecione uma ferramenta para começar
           </p>
-          <button
-            onClick={handleLogout}
-            className="text-white/70 hover:text-white transition-colors"
-          >
-            Sair
-          </button>
         </header>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
