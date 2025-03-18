@@ -11,7 +11,7 @@ interface ToolCardProps {
   url?: string;
 }
 
-const ToolCard: React.FC<ToolCardProps> = ({ title, description, icon, onClick, isReady, url }) => (
+const ToolCard: React.FC<ToolCardProps> = ({ title, description, icon, onClick, isReady }) => (
   <div 
     onClick={onClick}
     className={`
@@ -148,7 +148,6 @@ export default function Dashboard() {
               icon={tool.icon}
               onClick={() => handleToolClick(index)}
               isReady={tool.isReady}
-              url={tool.url}
             />
           ))}
         </div>
