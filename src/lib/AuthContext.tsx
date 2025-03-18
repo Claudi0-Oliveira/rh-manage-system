@@ -87,11 +87,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const userData = data as UserData;
       
       // Não armazenar a senha no estado ou localStorage
-      const userToStore = { ...userData };
-      delete userToStore.senha;
+      const { senha, ...userToStore } = userData;
       
       // Armazenar no estado e localStorage
-      setUserData(userToStore);
+      setUserData(userToStore as UserData);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(userToStore));
 
       return {
