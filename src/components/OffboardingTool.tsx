@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
+import { useTheme } from '../lib/ThemeContext';
+import ThemeToggle from './ThemeToggle';
+import { ArrowLeft, BarChart } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function OffboardingTool() {
+  const { darkMode } = useTheme();
+  const navigate = useNavigate();
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [sheetFile, setSheetFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-
+  
   const handleAudioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       if (sheetFile) {
@@ -25,6 +31,14 @@ export default function OffboardingTool() {
       }
       setSheetFile(e.target.files[0]);
     }
+  };
+
+  const handleBackClick = () => {
+    navigate('/dashboard');
+  };
+
+  const handleDashboardClick = () => {
+    navigate('/offboarding/dashboard');
   };
 
   const handleUpload = async () => {
@@ -72,20 +86,64 @@ export default function OffboardingTool() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-blue-900 to-gray-900 animate-gradient">
+    <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-indigo-900 via-blue-900 to-gray-900 animate-gradient'}`}>
       <div className="absolute inset-0 grid-pattern opacity-20"></div>
+      
+      {/* Fixed positioned navigation and theme controls */}
+      <div className="fixed top-4 left-4 z-50">
+        <button 
+          onClick={handleBackClick}
+          className="p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors flex items-center justify-center"
+          aria-label="Voltar para o Dashboard"
+        >
+          <ArrowLeft size={20} className="text-white" />
+        </button>
+      </div>
+      
+      <div className="fixed top-4 right-4 z-50 flex items-center space-x-3">
+        <div className="relative">
+          <div className="absolute -bottom-12 right-0 bg-blue-600 text-white text-xs px-3 py-2 rounded-lg whitespace-nowrap shadow-lg z-10">
+            Dashboard Interativo
+            <div className="absolute -top-1 right-5 w-2 h-2 bg-blue-600 transform rotate-45"></div>
+          </div>
+          
+          <button
+            onClick={handleDashboardClick}
+            className="p-3 rounded-full bg-white/20 hover:bg-white/30 transition-colors flex items-center justify-center shadow-md relative animate-pulse-subtle"
+            aria-label="Ver Dashboard Interativo"
+            title="Dashboard Interativo"
+          >
+            <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500 animate-ping"></span>
+            <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500"></span>
+            <BarChart size={20} className="text-white" />
+          </button>
+        </div>
+        <ThemeToggle />
+      </div>
+      
       <div className="relative container mx-auto px-4 py-12 flex flex-col items-center justify-center">
-        <header className="mb-12 text-center">
+        <header className="mb-12 text-center w-full pt-10">
           <div className="inline-block p-2 px-4 rounded-full bg-white/10 text-white/70 text-sm mb-4">
             Automação de Offboarding
           </div>
           <h1 className="text-3xl font-bold text-white mb-4 tracking-tight">
             Automação Inteligente de Resumo e Classificação de Entrevistas de Desligamento
           </h1>
+          
+          <div className="flex mt-4 mb-2 justify-center">
+            <div className="bg-blue-600/90 text-white py-2 px-4 rounded-lg text-sm flex items-center space-x-2 shadow-lg animate-pulse">
+              <BarChart size={18} />
+              <span>Confira as estatísticas no <b>Dashboard Interativo</b> no canto superior direito</span>
+              <svg width="20" height="20" className="ml-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 12H19" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M12 5L19 12L12 19" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+          </div>
         </header>
 
-        <div className="glass border border-white/20 rounded-2xl p-8 md:p-12 max-w-2xl w-full">
-          <div className="absolute inset-0 grid-pattern opacity-40"></div>
+        <div className={`${darkMode ? 'bg-gray-800/80' : 'glass'} border ${darkMode ? 'border-gray-700' : 'border-white/20'} rounded-2xl p-8 md:p-12 max-w-2xl w-full relative`}>
+          <div className="absolute inset-0 grid-pattern opacity-40 rounded-2xl"></div>
           <div className="relative z-10">
             <h3 className="text-xl font-semibold text-gray-100 mb-6 text-center">
               Faça o Upload do Arquivo da Entrevista abaixo
@@ -106,7 +164,7 @@ export default function OffboardingTool() {
                 onChange={handleAudioChange}
               />
               
-              <p className="text-gray-300 my-2">ou</p>
+              <p className={`my-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>ou</p>
               
               <label 
                 htmlFor="sheetFile" 
@@ -137,13 +195,13 @@ export default function OffboardingTool() {
               )}
               
               {audioFile && (
-                <p className="text-sm text-gray-300 mt-2">
+                <p className={`text-sm mt-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                   Arquivo de áudio selecionado: {audioFile.name}
                 </p>
               )}
               
               {sheetFile && (
-                <p className="text-sm text-gray-300 mt-2">
+                <p className={`text-sm mt-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                   Planilha selecionada: {sheetFile.name}
                 </p>
               )}
