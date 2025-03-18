@@ -3,17 +3,22 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import LoginPage from './components/LoginPage';
 import Dashboard from './components/Dashboard';
 import OffboardingTool from './components/OffboardingTool';
+import OffboardingDashboard from './components/OffboardingDashboard';
+import { ThemeProvider } from './lib/ThemeContext';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/offboarding" element={<OffboardingTool />} />
-        <Route path="/" element={<Navigate to="/login" replace />} />
-      </Routes>
-    </Router>
+    <ThemeProvider>
+      <Router>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/offboarding" element={<OffboardingTool />} />
+          <Route path="/offboarding/dashboard" element={<OffboardingDashboard />} />
+          <Route path="/" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </Router>
+    </ThemeProvider>
   );
 }
 
