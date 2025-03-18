@@ -1,8 +1,8 @@
-import React from 'react';
 import { Users, Calculator, Calendar, FileText, BarChart as ChartBar, GraduationCap, Clock, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
 import { useTheme } from '../lib/ThemeContext';
+import { useAuth } from '../lib/AuthContext';
 
 interface ToolCardProps {
   title: string;
@@ -70,6 +70,7 @@ const ToolCard: React.FC<ToolCardProps> = ({ title, description, icon, onClick, 
 export default function Dashboard() {
   const navigate = useNavigate();
   const { darkMode } = useTheme();
+  const { userData, signOut } = useAuth();
   
   const tools = [
     {
@@ -130,7 +131,8 @@ export default function Dashboard() {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await signOut();
     navigate('/login');
   };
 
@@ -139,6 +141,11 @@ export default function Dashboard() {
       <div className="absolute inset-0 grid-pattern opacity-20"></div>
       
       <div className="fixed top-4 right-4 z-50 flex items-center space-x-3">
+        {userData && (
+          <div className="p-2 px-4 rounded-full bg-white/10 text-white/90 text-sm">
+            {userData.name}
+          </div>
+        )}
         <button
           onClick={handleLogout}
           className="p-3 rounded-full bg-white/20 hover:bg-white/30 transition-colors flex items-center justify-center shadow-md"
@@ -162,6 +169,11 @@ export default function Dashboard() {
           <h1 className="text-4xl font-bold text-white mb-4 tracking-tight">
             Gestão de Recursos Humanos
           </h1>
+          {userData && (
+            <p className="text-blue-100/80 mb-2">
+              Bem-vindo(a), {userData.name}
+            </p>
+          )}
           <p className="text-blue-100/80 mb-4">
             Selecione uma ferramenta para começar
           </p>
