@@ -18,6 +18,11 @@
   background-color: rgba(255, 255, 255, 0.7);
 }
 
+:root.dark .glass {
+  background-color: rgba(31, 41, 55, 0.85);
+  backdrop-filter: blur(16px) saturate(180%);
+}
+
 .glass-dark {
   backdrop-filter: blur(16px) saturate(180%);
   background-color: rgba(17, 25, 40, 0.75);
@@ -26,4 +31,8 @@
 .grid-pattern {
   background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
   background-size: 20px 20px;
+}
+
+.text-shadow-sm {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
