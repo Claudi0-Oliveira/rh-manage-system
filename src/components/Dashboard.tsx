@@ -104,8 +104,8 @@ export default function Dashboard() {
       icon: <GraduationCap size={24} />
     },
     {
-      title: "Processo de Integração Simplificados",
-      description: "A IA fornece orientação para a criação de programas de integração eficazes, garantindo que os novos funcionários tenham o treinamento e a documentação necessários para um início tranquilo.",
+      title: "IA Especialista de Onboarding",
+      description: "A IA integra novos colaboradores alinhando-os à cultura e processos da empresa, oferecendo suporte contínuo além do onboarding tradicional para uma adaptação eficiente.",
       icon: <Clock size={24} />
     },
     {
