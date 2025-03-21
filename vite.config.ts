@@ -7,4 +7,10 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
+  // Configuração para SPA no Netlify
+  build: {
+    outDir: 'dist',
+    // Garante que os arquivos na pasta public sejam copiados
+    assetsDir: 'assets',
+  },
 });
