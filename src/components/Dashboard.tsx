@@ -1,4 +1,4 @@
-import { Users, Calculator, Calendar, FileText, BarChart as ChartBar, GraduationCap, Clock, Settings } from 'lucide-react';
+import { Users, Calculator, Calendar, FileText, BarChart as ChartBar, GraduationCap, Clock, Settings, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
 import { useTheme } from '../lib/ThemeContext';
@@ -114,6 +114,13 @@ export default function Dashboard() {
       icon: <Settings size={24} />,
       isReady: true,
       url: "/offboarding"
+    },
+    {
+      title: "Painel Administrativo",
+      description: "Acesso ao painel administrativo para gerenciar usuários, visualizar relatórios e configurar permissões do sistema.",
+      icon: <Shield size={24} />,
+      isReady: true,
+      url: "/admin-login"
     }
   ];
 
