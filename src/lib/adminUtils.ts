@@ -58,5 +58,5 @@ export const checkAdminSession = (): boolean => {
  */
 export const adminLogout = (): void => {
   localStorage.removeItem('admin_session');
-  window.location.href = '/admin-login';
+  window.location.href = '/login';
 }; 

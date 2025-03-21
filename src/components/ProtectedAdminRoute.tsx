@@ -25,7 +25,7 @@ export default function ProtectedAdminRoute() {
   
   // Redireciona para a página de login admin se não estiver autenticado
   if (!isAuthenticated) {
-    return <Navigate to="/admin-login" replace />;
+    return <Navigate to="/login" replace />;
   }
   
   // Renderiza o conteúdo da rota se estiver autenticado

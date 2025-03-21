@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
 import { useTheme } from '../lib/ThemeContext';
 import { useAuth } from '../lib/AuthContext';
+import { checkAdminSession } from '../lib/adminUtils';
+import { useEffect, useState } from 'react';
 
 interface ToolCardProps {
   title: string;
@@ -71,7 +73,14 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { darkMode } = useTheme();
   const { userData, signOut } = useAuth();
+  const [isAdmin, setIsAdmin] = useState(false);
   
+  useEffect(() => {
+    // Verificar se o usuário é admin
+    const adminStatus = checkAdminSession();
+    setIsAdmin(adminStatus);
+  }, []);
+
   const tools = [
     {
       title: "Planos de Desenvolvimento Personalizados",
@@ -114,13 +123,6 @@ export default function Dashboard() {
       icon: <Settings size={24} />,
       isReady: true,
       url: "/offboarding"
-    },
-    {
-      title: "Painel Administrativo",
-      description: "Acesso ao painel administrativo para gerenciar usuários, visualizar relatórios e configurar permissões do sistema.",
-      icon: <Shield size={24} />,
-      isReady: true,
-      url: "/admin-login"
     }
   ];
 
@@ -143,6 +145,10 @@ export default function Dashboard() {
     navigate('/login');
   };
 
+  const goToAdminPanel = () => {
+    navigate('/painel-admin');
+  };
+
   return (
     <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-indigo-900 via-blue-900 to-gray-900 animate-gradient'}`}>
       <div className="absolute inset-0 grid-pattern opacity-20"></div>
@@ -153,6 +159,18 @@ export default function Dashboard() {
             {userData.name}
           </div>
         )}
+        
+        {isAdmin && (
+          <button
+            onClick={goToAdminPanel}
+            className="p-3 rounded-full bg-white/20 hover:bg-white/30 transition-colors flex items-center justify-center shadow-md"
+            aria-label="Ir para o Painel Administrativo"
+            title="Painel Administrativo"
+          >
+            <Shield size={20} className="text-white" />
+          </button>
+        )}
+        
         <button
           onClick={handleLogout}
           className="p-3 rounded-full bg-white/20 hover:bg-white/30 transition-colors flex items-center justify-center shadow-md"

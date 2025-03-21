@@ -4,6 +4,7 @@ import { Building2 } from 'lucide-react';
 import { useTheme } from '../lib/ThemeContext';
 import ThemeToggle from './ThemeToggle';
 import { useAuth } from '../lib/AuthContext';
+import { isAdminEmail } from '../lib/adminUtils';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -22,6 +23,27 @@ export default function LoginPage() {
     setLoading(true);
     
     try {
+      // Verificar se são credenciais de admin
+      const adminEmail = import.meta.env.VITE_ADMIN_EMAIL;
+      const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD;
+      
+      if (adminEmail && adminPassword && 
+          formData.email === adminEmail && 
+          formData.password === adminPassword) {
+        
+        // Armazenar sessão de admin
+        localStorage.setItem('admin_session', JSON.stringify({
+          email: formData.email,
+          isAdmin: true,
+          timestamp: new Date().getTime()
+        }));
+        
+        // Redirecionar para o painel administrativo
+        navigate('/painel-admin');
+        return;
+      }
+      
+      // Se não for admin, tentar login normal
       const { error, success, userActive } = await signIn(formData.email, formData.password);
       
       if (!success) {

@@ -3,8 +3,8 @@ import LoginPage from './components/LoginPage';
 import Dashboard from './components/Dashboard';
 import OffboardingTool from './components/OffboardingTool';
 import OffboardingDashboard from './components/OffboardingDashboard';
-import AdminLogin from './components/AdminLogin';
-import AdminPanel from './components/AdminPanel';
+import AdminDashboard from './components/AdminDashboard';
+import ClientManagement from './components/ClientManagement';
 import { ThemeProvider } from './lib/ThemeContext';
 import { AuthProvider } from './lib/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -17,7 +17,6 @@ function App() {
         <Router>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/admin-login" element={<AdminLogin />} />
             
             {/* Rotas protegidas de usuário normal */}
             <Route element={<ProtectedRoute />}>
@@ -28,7 +27,8 @@ function App() {
             
             {/* Rotas protegidas de administrador */}
             <Route element={<ProtectedAdminRoute />}>
-              <Route path="/painel" element={<AdminPanel />} />
+              <Route path="/painel-admin" element={<AdminDashboard />} />
+              <Route path="/gerenciar-clientes" element={<ClientManagement />} />
             </Route>
             
             <Route path="/" element={<Navigate to="/login" replace />} />
