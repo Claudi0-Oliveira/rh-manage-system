@@ -5,6 +5,7 @@ import { useTheme } from '../lib/ThemeContext';
 import ThemeToggle from './ThemeToggle';
 import { useAuth } from '../lib/AuthContext';
 import { isAdminEmail } from '../lib/adminUtils';
+import { supabase } from '../lib/supabase';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -31,9 +32,25 @@ export default function LoginPage() {
           formData.email === adminEmail && 
           formData.password === adminPassword) {
         
-        // Armazenar sessão de admin
+        // Buscar dados do admin no Supabase pelo email
+        const { data: adminData, error: adminError } = await supabase
+          .from('user')
+          .select('*')
+          .eq('email', adminEmail)
+          .single();
+          
+        let adminName = "Administrador";
+        
+        if (adminError) {
+          console.error("Erro ao buscar dados do admin:", adminError);
+        } else if (adminData) {
+          adminName = adminData.name || "Administrador";
+        }
+        
+        // Armazenar sessão de admin com o nome
         localStorage.setItem('admin_session', JSON.stringify({
           email: formData.email,
+          name: adminName,
           isAdmin: true,
           timestamp: new Date().getTime()
         }));

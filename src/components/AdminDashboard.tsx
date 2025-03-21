@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../lib/ThemeContext';
 import ThemeToggle from './ThemeToggle';
@@ -11,6 +11,22 @@ const STORAGE_KEY = 'rh_user_session';
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const { darkMode } = useTheme();
+  const [adminName, setAdminName] = useState('Administrador');
+  
+  useEffect(() => {
+    // Carregar o nome do administrador da sessão
+    try {
+      const adminSession = localStorage.getItem('admin_session');
+      if (adminSession) {
+        const session = JSON.parse(adminSession);
+        if (session.name) {
+          setAdminName(session.name);
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao carregar nome do administrador:', error);
+    }
+  }, []);
   
   const handleLogout = () => {
     adminLogout();
@@ -26,12 +42,12 @@ export default function AdminDashboard() {
     
     if (adminSession) {
       try {
-        // Obter email do admin da sessão
-        const { email } = JSON.parse(adminSession);
+        // Obter dados do admin da sessão
+        const { email, name } = JSON.parse(adminSession);
         
         // Criar uma sessão de usuário para o admin, para que ele possa acessar o dashboard
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
-          name: 'Administrador do Sistema',
+          name: name || 'Administrador do Sistema',
           email: email,
           role: 'admin'
         }));
@@ -53,6 +69,9 @@ export default function AdminDashboard() {
       <div className="absolute inset-0 grid-pattern opacity-20"></div>
       
       <div className="fixed top-4 right-4 z-50 flex items-center space-x-3">
+        <div className="p-2 px-4 rounded-full bg-white/10 text-white/90 text-sm">
+          {adminName}
+        </div>
         <button
           onClick={handleLogout}
           className="p-3 rounded-full bg-white/20 hover:bg-white/30 transition-colors flex items-center justify-center shadow-md"
@@ -73,7 +92,7 @@ export default function AdminDashboard() {
             Painel Administrativo
           </h1>
           <p className="text-blue-100/80 mb-4">
-            Bem-vindo ao painel de administração
+            Bem-vindo, {adminName}
           </p>
         </header>
         
