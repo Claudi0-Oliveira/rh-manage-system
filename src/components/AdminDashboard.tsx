@@ -4,6 +4,7 @@ import { useTheme } from '../lib/ThemeContext';
 import ThemeToggle from './ThemeToggle';
 import { Users, LogOut, BarChart as ChartBar } from 'lucide-react';
 import { adminLogout } from '../lib/adminUtils';
+import { supabase } from '../lib/supabase';
 
 // Constante para a chave de armazenamento do usuário
 const STORAGE_KEY = 'rh_user_session';
@@ -36,19 +37,37 @@ export default function AdminDashboard() {
     navigate('/gerenciar-clientes');
   };
 
-  const navigateToTools = () => {
+  const navigateToTools = async () => {
     // Verificar se já existe uma sessão de administrador
     const adminSession = localStorage.getItem('admin_session');
     
     if (adminSession) {
       try {
         // Obter dados do admin da sessão
-        const { email, name } = JSON.parse(adminSession);
+        const sessionData = JSON.parse(adminSession);
+        const adminEmail = sessionData.email;
+        
+        // Buscar dados atualizados do admin diretamente do Supabase
+        const { data: adminData, error: adminError } = await supabase
+          .from('user')
+          .select('*')
+          .eq('email', adminEmail)
+          .single();
+          
+        let adminName = sessionData.name || 'Administrador';
+        
+        // Se conseguiu buscar os dados do Supabase, usar o nome de lá
+        if (!adminError && adminData && adminData.name) {
+          adminName = adminData.name;
+          console.log("Nome obtido do Supabase:", adminName);
+        } else if (adminError) {
+          console.error("Erro ao buscar dados do admin:", adminError);
+        }
         
         // Criar uma sessão de usuário para o admin, para que ele possa acessar o dashboard
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
-          name: name || 'Administrador do Sistema',
-          email: email,
+          name: adminName,
+          email: adminEmail,
           role: 'admin'
         }));
         
